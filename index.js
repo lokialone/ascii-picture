@@ -6,6 +6,11 @@ let ctx = canvas.getContext('2d')
 // let imgData = ctx.getImageData(0 , 0, 400, 400);
 // let imgDataArray = imgData.data;
 
+var img = new Image();
+img.src = "./assets/img3.png";
+img.onload =function(){
+    invert(this);
+};
 function invert(img) {
     ctx.drawImage(img,0,0);
     //获取图片对象以及元素点的数组
@@ -14,7 +19,7 @@ function invert(img) {
     //转换灰度图
     var arr=["M","N","H","Q","$","O","C","?","7",">","!",":","–",";","."];
     var result=[];
-    for (var i = 0, len = data.length; i < len; i += 8) {
+    for (var i = 0, len = data.length ; i < len; i += 4) {
       // R0.3+G0.59+B*0.11
         var avg=(data[i]+ data[i+1]+data[i+2])/3;
         data[i] = avg;
