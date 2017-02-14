@@ -14,7 +14,7 @@ function invert(img) {
     var img1 = ctx.getImageData(0, 0, 800, 400);
     var data = img1.data;
     //转换灰度图
-    var arr=["M","N","H","Q","$$","O","C","?","7",">","!!!!","::::","–",";","...."];
+    var arr=["M","N","H","Q","$","O","C","?","7",">","!",":","–",";","'"];
     var result=[];
     for (var i = 0, len = data.length ; i < len; i += 4) {
         var avg=(data[i]+ data[i+1]+data[i+2])/3;
@@ -23,7 +23,7 @@ function invert(img) {
         data[i+2] = avg;
         var num=Math.floor(avg/18);
         result.push(arr[num]);
-        if(i%800==0&&i!=0){
+        if(i%3200==0&&i!=0){
             result.push("<br>")
         }
     }
