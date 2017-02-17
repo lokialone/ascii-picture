@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+  #show{
+    /*font-family:'Monospace';*/
+    font-family: "Courier New", "Courier", "mono";
+    font-size: 12px;
+    color: #666666;
+    line-height: 8px;
+  }</style>
+<p>要使用的视频：</p>
+
+<video id="video1" controls width="270" autoplay>
+  <source src="./assets/mov_bbb.mp4" type='video/mp4'>
+  <source src="./assets/mov_bbb.ogg" type='video/ogg'>
+  <source src="./assets/mov_bbb.webm" type='video/webm'>
+</video>
+
+<p>画布（每 20 毫秒，代码就会绘制视频的当前帧）：</p>
+
+<canvas id="myCanvas" width="270" height="135" style="border:1px solid #d3d3d3;display:none">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<pre id='show'></pre>
+
+<script>
+
+var v=document.getElementById("video1");
+var c=document.getElementById("myCanvas");
+ctx=c.getContext('2d');
+var timer = '';
+v.addEventListener('play', function() {
+  timer=window.setInterval(function() {
+    ctx.drawImage(v,0,0,270,135);
+    var img1 = ctx.getImageData(0, 0, 270, 135);
+    var data = img1.data;
+    var arr=["M","N","H","Q","$","O","C","?","7",">","!",":","–",";","."];
+    // var arr= [".",";","-",":","!",">","7","?","C","O","$","Q","H","N","M"];
+    var result=[];
+    for (var i = 0, len = data.length ; i < len; i += 8) {
+        //转换灰度图
+        var avg=(data[i]+ data[i+1]+data[i+2])/3;
+        data[i] = avg;
+        data[i+1] = avg;
+        data[i+2] = avg;
+        var num=Math.floor(avg/18);
+        result.push(arr[num]);
+        if(i%1080==0&&i!=0){
+            result.push("<br>")
+        }
+    }
+    var div = document.getElementById('show')
+    div.innerHTML = result.join('')
+
+
+},100);},false);
+
+v.addEventListener('pause',function() {window.clearInterval(timer);},false);
+v.addEventListener('ended',function() {clearInterval(timer);},false);
+
+</script>
+
+</body>
+</html>
