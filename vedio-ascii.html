@@ -8,6 +8,10 @@
     font-size: 12px;
     color: #666666;
     line-height: 8px;
+    transform: scale(0.5);
+    position: absolute;
+    top: -220px;
+    left: 120px;
   }</style>
 <p>要使用的视频：</p>
 
@@ -35,12 +39,10 @@ v.addEventListener('play', function() {
     ctx.drawImage(v,0,0,270,135);
     var img1 = ctx.getImageData(0, 0, 270, 135);
     var data = img1.data;
-    var arr=["M","N","H","Q","$","O","C","?","7",">","!",":","–",";","."];
-    // var arr= [".",";","-",":","!",">","7","?","C","O","$","Q","H","N","M"];
+    var arr= [".",";","-",":","!",">","7","?","C","O","$","Q","H","N","M"];
     var result=[];
     for (var i = 0, len = data.length ; i < len; i += 8) {
-        //转换灰度图
-        var avg=(data[i]+ data[i+1]+data[i+2])/3;
+        var avg = rgb2gray(data[i], data[i+1], data[i+2]);
         data[i] = avg;
         data[i+1] = avg;
         data[i+2] = avg;
@@ -51,10 +53,12 @@ v.addEventListener('play', function() {
         }
     }
     var div = document.getElementById('show')
-    div.innerHTML = result.join('')
-
-
+    div.innerHTML = result.join('');
 },100);},false);
+//转换灰度图
+function rgb2gray(r, g, b) {
+    return r * 0.333 + g * 0.333 + b * 0.333;
+}
 
 v.addEventListener('pause',function() {window.clearInterval(timer);},false);
 v.addEventListener('ended',function() {clearInterval(timer);},false);

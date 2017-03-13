@@ -1,112 +1,64 @@
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d')
-// let imgUrl = './assets/img.png'
 
-var img = new Image();
-img.src = "./assets/img.png";
+let img = new Image()
+img.src = "./assets/img.png"
 img.onload =function(){
-    // invert(this);
-    ascii(this);
-};
-function invert(img) {
-    ctx.drawImage(img,0,0);
-    //获取图片对象以及元素点的数组
-    var img1 = ctx.getImageData(0, 0, 500, 400);
-    var data = img1.data;
-    //转换灰度图
-    var arr=["M","N","H","Q","$","O","C","?","7",">","!",":","–",";","'"];
-    var result=[];
-    for (var i = 0, len = data.length ; i < len; i += 16) {
-        var avg=(data[i]+ data[i+1]+data[i+2])/3;
-        data[i] = avg;
-        data[i+1] = avg;
-        data[i+2] = avg;
-        var num=Math.floor(avg/18);
-        result.push(arr[num]);
-        if(i%2000==0&&i!=0){
-            result.push("<br>")
-        }
-    }
-    let div = document.getElementById('show')
-    div.innerHTML = result.join('')
-    ctx.putImageData(img1, 0, 0);
-
-}
-// 单极图
-function danjihua() {
-  for (var index = 0; index <= img.width * img.height * 4; index += 4){
-          var red = imgDataArray[index];
-          var green = imgDataArray[index + 1];
-          var blue = imgDataArray[index + 2];
-          var gray = rgb2gray(red, green, blue);
-          if (gray < 128){
-              imgData.data[index] = 0;
-              imgData.data[index + 1] = 0;
-              imgData.data[index + 2] = 0;
-          }
-          else {
-              imgData.data[index] = 255;
-              imgData.data[index + 1] = 255;
-              imgData.data[index + 2] = 255;
-          }
-      }
+    ascii(this)
+    // pic2gray(this)
 }
 
 //灰度化
-function huiduhua() {
-  for (var index = 0; index <= img.width * img.height * 4; index += 4){
-          var red = imgDataArray[index];
-          var green = imgDataArray[index + 1];
-          var blue = imgDataArray[index + 2];
-          var gray = rgb2gray(red, green, blue);
-          imgData.data[index] = gray;
-          imgData.data[index + 1] = gray;
-          imgData.data[index + 2] = gray;
+function pic2gray(img) {
+  ctx.drawImage(img, 0, 0)
+  let imgData = ctx.getImageData(0 , 0, img.width, img.height)
+  let imgDataArray = imgData.data
+  for (let index = 0; index <= img.width * img.height * 4; index += 4){
+          let gray = rgb2gray(imgDataArray[index], imgDataArray[index + 1], imgDataArray[index + 2])
+          imgData.data[index] = imgData.data[index + 1] = imgData.data[index + 2] = gray
       }
+  ctx.putImageData(imgData, 0, 0)
 }
 
 
-// 转换失败的代码0.0
 function ascii(img) {
-  var result = "";
-  var lineIndex = 0;
+  let result = ""
+  let lineIndex = 0
   ctx.drawImage(img, 0, 0)
-  let imgData = ctx.getImageData(0 , 0, img.width, img.height);
-  let imgDataArray = imgData.data;
-  for (var lineHeight = 0; lineHeight < img.height; lineHeight += 4){
-      var lineASC = "";
-      for (var lineFlag = 0; lineFlag < img.width; lineFlag += 2){
-          lineIndex = (lineHeight * img.width + lineFlag) * 4;
-          var r = imgDataArray[lineIndex];
-          var g = imgDataArray[lineIndex + 1];
-          var b = imgDataArray[lineIndex + 2];
-          lineASC += gray2asc(rgb2gray(r, g, b));
+  let imgData = ctx.getImageData(0 , 0, img.width, img.height)
+  let imgDataArray = imgData.data
+  for (let lineHeight = 0; lineHeight < img.height; lineHeight += 4){
+      let lineASC = ""
+      for (let lineFlag = 0; lineFlag < img.width; lineFlag += 2){
+          lineIndex = (lineHeight * img.width + lineFlag) * 4
+          lineASC += gray2asc(rgb2gray(imgDataArray[lineIndex],imgDataArray[lineIndex + 1], imgDataArray[lineIndex + 2]))
       }
-      lineASC += '\n';
-      result += lineASC;
+      lineASC += '\n'
+      result += lineASC
   }
   let div = document.getElementById('show')
-  div.innerHTML = result;
+  div.innerHTML = result
 }
 
 
-      //  console.log(result);
-
 function rgb2gray(r, g, b) {
-    return r * 0.333 + g * 0.333 + b * 0.333;
+    return r * 0.333 + g * 0.333 + b * 0.333
+}
+
+function rgb2gray_1(r, g, b) {
+  return  r * 0.3 + g * 0.59 + b * 0.11
 }
 
 function gray2asc(gray) {
-    /*ASCII--I'mYasic*/
     /*32 64 96 128 160 192 224 256*/
-    gray = 255 - gray;
+    gray = 255 - gray
     if (gray < 128){
         if (gray < 64){
             if (gray < 32){
                 return '\''
             }
             else {
-                return 'c'
+                return ' '
             }
         }
         else {
