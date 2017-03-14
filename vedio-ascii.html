@@ -43,9 +43,7 @@ v.addEventListener('play', function() {
     var result=[];
     for (var i = 0, len = data.length ; i < len; i += 8) {
         var avg = rgb2gray(data[i], data[i+1], data[i+2]);
-        data[i] = avg;
-        data[i+1] = avg;
-        data[i+2] = avg;
+        data[i] = data[i+1] = data[i+2] = avg;
         var num=Math.floor(avg/18);
         result.push(arr[num]);
         if(i%1080==0&&i!=0){
